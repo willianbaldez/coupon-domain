@@ -41,7 +41,7 @@ class ExpirationDateTest {
                     InvalidExpirationDateException.class,
                     () -> ExpirationDate.of(null)
             );
-            assertTrue(ex.getMessage().contains("required"));
+            assertTrue(ex.getMessage().contains("obrigatória"));
         }
 
         @Test
@@ -53,7 +53,7 @@ class ExpirationDateTest {
                     InvalidExpirationDateException.class,
                     () -> ExpirationDate.of(yesterday)
             );
-            assertTrue(ex.getMessage().contains("past"));
+            assertTrue(ex.getMessage().contains("passado"));
         }
     }
 

@@ -53,7 +53,7 @@ class CouponCodeTest {
                     InvalidCouponCodeException.class,
                     () -> CouponCode.of(null)
             );
-            assertTrue(ex.getMessage().contains("required"));
+            assertTrue(ex.getMessage().contains("obrigatório"));
         }
 
         @Test
@@ -75,7 +75,7 @@ class CouponCodeTest {
                     InvalidCouponCodeException.class,
                     () -> CouponCode.of("AB12")
             );
-            assertTrue(ex.getMessage().contains("exactly 6"));
+            assertTrue(ex.getMessage().contains("exatamente 6"));
         }
 
         @Test

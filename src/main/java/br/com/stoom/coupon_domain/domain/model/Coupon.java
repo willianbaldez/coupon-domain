@@ -62,7 +62,7 @@ public class Coupon {
     public void delete() {
         if (this.deleted) {
             throw new CouponAlreadyDeletedException(
-                    "Coupon '" + this.code.value() + "' has already been deleted"
+                    "O cupom '" + this.code.value() + "' já foi excluído"
             );
         }
         this.deleted = true;
@@ -132,7 +132,7 @@ public class Coupon {
 
     private static void validateDescription(String description) {
         if (description == null || description.isBlank()) {
-            throw new IllegalArgumentException("Description is required");
+            throw new IllegalArgumentException("A descrição é obrigatória");
         }
     }
 }

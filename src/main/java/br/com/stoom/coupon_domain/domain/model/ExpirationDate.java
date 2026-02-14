@@ -15,10 +15,10 @@ public final class ExpirationDate {
 
     public static ExpirationDate of(LocalDate value) {
         if (value == null) {
-            throw new InvalidExpirationDateException("Expiration date is required");
+            throw new InvalidExpirationDateException("A data de expiração é obrigatória");
         }
         if (value.isBefore(LocalDate.now())) {
-            throw new InvalidExpirationDateException("Expiration date cannot be in the past");
+            throw new InvalidExpirationDateException("A data de expiração não pode estar no passado");
         }
         return new ExpirationDate(value);
     }

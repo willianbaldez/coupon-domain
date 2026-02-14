@@ -17,11 +17,11 @@ public final class DiscountValue {
 
     public static DiscountValue of(BigDecimal value) {
         if (value == null) {
-            throw new InvalidDiscountValueException("Discount value is required");
+            throw new InvalidDiscountValueException("O valor de desconto é obrigatório");
         }
         if (value.compareTo(MIN_VALUE) < 0) {
             throw new InvalidDiscountValueException(
-                    "Discount value must be at least " + MIN_VALUE + ", got " + value
+                    "O valor de desconto deve ser no mínimo " + MIN_VALUE + ", mas foi informado " + value
             );
         }
         return new DiscountValue(value);

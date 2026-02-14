@@ -17,15 +17,15 @@ public final class CouponCode {
 
     public static CouponCode of(String raw) {
         if (raw == null || raw.isBlank()) {
-            throw new InvalidCouponCodeException("Coupon code is required");
+            throw new InvalidCouponCodeException("O código do cupom é obrigatório");
         }
 
         String sanitized = raw.replaceAll(ALPHANUMERIC_PATTERN, "").toUpperCase();
 
         if (sanitized.length() != REQUIRED_LENGTH) {
             throw new InvalidCouponCodeException(
-                    "Coupon code must have exactly " + REQUIRED_LENGTH
-                            + " alphanumeric characters, got " + sanitized.length()
+                    "O código do cupom deve ter exatamente " + REQUIRED_LENGTH
+                            + " caracteres alfanuméricos, mas possui " + sanitized.length()
             );
         }
 

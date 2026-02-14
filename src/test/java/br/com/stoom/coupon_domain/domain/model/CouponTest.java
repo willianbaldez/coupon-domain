@@ -183,7 +183,7 @@ class CouponTest {
                     CouponAlreadyDeletedException.class,
                     coupon::delete
             );
-            assertTrue(ex.getMessage().contains("already been deleted"));
+            assertTrue(ex.getMessage().contains("já foi excluído"));
         }
     }
 

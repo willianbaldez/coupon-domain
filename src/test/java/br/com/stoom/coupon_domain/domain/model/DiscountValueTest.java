@@ -47,7 +47,7 @@ class DiscountValueTest {
                     InvalidDiscountValueException.class,
                     () -> DiscountValue.of(null)
             );
-            assertTrue(ex.getMessage().contains("required"));
+            assertTrue(ex.getMessage().contains("obrigatório"));
         }
 
         @Test
@@ -57,7 +57,7 @@ class DiscountValueTest {
                     InvalidDiscountValueException.class,
                     () -> DiscountValue.of(new BigDecimal("0.49"))
             );
-            assertTrue(ex.getMessage().contains("at least"));
+            assertTrue(ex.getMessage().contains("no mínimo"));
         }
 
         @Test
