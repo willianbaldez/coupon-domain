@@ -9,15 +9,15 @@ import java.math.BigDecimal;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-@DisplayName("DiscountValue Value Object")
+@DisplayName("DiscountValue - Value Object")
 class DiscountValueTest {
 
     @Nested
-    @DisplayName("Creation via of()")
+    @DisplayName("Criação via of()")
     class Creation {
 
         @Test
-        @DisplayName("should create with exact minimum value (0.5)")
+        @DisplayName("deve criar com o valor mínimo exato (0.5)")
         void shouldCreateWithMinimumValue() {
             DiscountValue discount = DiscountValue.of(new BigDecimal("0.5"));
 
@@ -25,7 +25,7 @@ class DiscountValueTest {
         }
 
         @Test
-        @DisplayName("should create with value above minimum")
+        @DisplayName("deve criar com valor acima do mínimo")
         void shouldCreateWithValueAboveMinimum() {
             DiscountValue discount = DiscountValue.of(new BigDecimal("10.00"));
 
@@ -33,7 +33,7 @@ class DiscountValueTest {
         }
 
         @Test
-        @DisplayName("should create with large discount value")
+        @DisplayName("deve criar com valor de desconto alto")
         void shouldCreateWithLargeValue() {
             DiscountValue discount = DiscountValue.of(new BigDecimal("999.99"));
 
@@ -41,7 +41,7 @@ class DiscountValueTest {
         }
 
         @Test
-        @DisplayName("should reject null value")
+        @DisplayName("deve rejeitar valor nulo")
         void shouldRejectNull() {
             InvalidDiscountValueException ex = assertThrows(
                     InvalidDiscountValueException.class,
@@ -51,7 +51,7 @@ class DiscountValueTest {
         }
 
         @Test
-        @DisplayName("should reject value below minimum (0.49)")
+        @DisplayName("deve rejeitar valor abaixo do mínimo (0.49)")
         void shouldRejectBelowMinimum() {
             InvalidDiscountValueException ex = assertThrows(
                     InvalidDiscountValueException.class,
@@ -61,7 +61,7 @@ class DiscountValueTest {
         }
 
         @Test
-        @DisplayName("should reject zero")
+        @DisplayName("deve rejeitar valor zero")
         void shouldRejectZero() {
             assertThrows(
                     InvalidDiscountValueException.class,
@@ -70,7 +70,7 @@ class DiscountValueTest {
         }
 
         @Test
-        @DisplayName("should reject negative value")
+        @DisplayName("deve rejeitar valor negativo")
         void shouldRejectNegative() {
             assertThrows(
                     InvalidDiscountValueException.class,
@@ -80,11 +80,11 @@ class DiscountValueTest {
     }
 
     @Nested
-    @DisplayName("Reconstitution")
+    @DisplayName("Reconstituição")
     class Reconstitution {
 
         @Test
-        @DisplayName("should reconstitute from persisted value without validation")
+        @DisplayName("deve reconstituir a partir de valor persistido sem validação")
         void shouldReconstitute() {
             DiscountValue discount = DiscountValue.reconstitute(new BigDecimal("25.00"));
 
@@ -93,11 +93,11 @@ class DiscountValueTest {
     }
 
     @Nested
-    @DisplayName("Equality")
+    @DisplayName("Igualdade")
     class Equality {
 
         @Test
-        @DisplayName("should be equal when numeric values are the same (ignoring scale)")
+        @DisplayName("deve ser igual quando os valores numéricos são iguais (ignorando escala)")
         void shouldBeEqualIgnoringScale() {
             DiscountValue d1 = DiscountValue.of(new BigDecimal("10.0"));
             DiscountValue d2 = DiscountValue.of(new BigDecimal("10.00"));
@@ -107,7 +107,7 @@ class DiscountValueTest {
         }
 
         @Test
-        @DisplayName("should not be equal when values differ")
+        @DisplayName("não deve ser igual quando os valores são diferentes")
         void shouldNotBeEqualForDifferentValues() {
             DiscountValue d1 = DiscountValue.of(new BigDecimal("5.00"));
             DiscountValue d2 = DiscountValue.of(new BigDecimal("10.00"));
@@ -116,7 +116,7 @@ class DiscountValueTest {
         }
 
         @Test
-        @DisplayName("should not be equal to null")
+        @DisplayName("não deve ser igual a nulo")
         void shouldNotBeEqualToNull() {
             DiscountValue discount = DiscountValue.of(new BigDecimal("5.00"));
 
@@ -125,7 +125,7 @@ class DiscountValueTest {
     }
 
     @Test
-    @DisplayName("toString should return plain numeric string")
+    @DisplayName("toString deve retornar o valor numérico sem notação científica")
     void toStringShouldReturnPlainValue() {
         DiscountValue discount = DiscountValue.of(new BigDecimal("15.50"));
 

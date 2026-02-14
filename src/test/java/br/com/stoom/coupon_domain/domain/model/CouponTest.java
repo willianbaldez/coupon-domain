@@ -15,7 +15,7 @@ import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-@DisplayName("Coupon Aggregate Root")
+@DisplayName("Coupon - Aggregate Root")
 class CouponTest {
 
     private static final String VALID_CODE = "ABC123";
@@ -32,7 +32,7 @@ class CouponTest {
     class FactoryCreate {
 
         @Test
-        @DisplayName("should create a valid coupon with all fields populated")
+        @DisplayName("deve criar um cupom válido com todos os campos preenchidos")
         void shouldCreateValidCoupon() {
             Coupon coupon = createValidCoupon();
 
@@ -48,7 +48,7 @@ class CouponTest {
         }
 
         @Test
-        @DisplayName("should create a published coupon")
+        @DisplayName("deve criar um cupom já publicado")
         void shouldCreatePublishedCoupon() {
             Coupon coupon = Coupon.create(VALID_CODE, VALID_DESCRIPTION, VALID_DISCOUNT, VALID_EXPIRATION, true);
 
@@ -56,7 +56,7 @@ class CouponTest {
         }
 
         @Test
-        @DisplayName("should generate a unique ID for each coupon")
+        @DisplayName("deve gerar um ID único para cada cupom")
         void shouldGenerateUniqueId() {
             Coupon coupon1 = createValidCoupon();
             Coupon coupon2 = createValidCoupon();
@@ -65,7 +65,7 @@ class CouponTest {
         }
 
         @Test
-        @DisplayName("should trim description whitespace")
+        @DisplayName("deve remover espaços em branco da descrição")
         void shouldTrimDescription() {
             Coupon coupon = Coupon.create(VALID_CODE, "  spaced  ", VALID_DISCOUNT, VALID_EXPIRATION, false);
 
@@ -73,7 +73,7 @@ class CouponTest {
         }
 
         @Test
-        @DisplayName("should sanitize coupon code (remove special characters)")
+        @DisplayName("deve sanitizar o código do cupom (remover caracteres especiais)")
         void shouldSanitizeCode() {
             Coupon coupon = Coupon.create("A-B.C!1@2#3", VALID_DESCRIPTION, VALID_DISCOUNT, VALID_EXPIRATION, false);
 
@@ -81,35 +81,35 @@ class CouponTest {
         }
 
         @Test
-        @DisplayName("should reject null description")
+        @DisplayName("deve rejeitar descrição nula")
         void shouldRejectNullDescription() {
             assertThrows(IllegalArgumentException.class,
                     () -> Coupon.create(VALID_CODE, null, VALID_DISCOUNT, VALID_EXPIRATION, false));
         }
 
         @Test
-        @DisplayName("should reject blank description")
+        @DisplayName("deve rejeitar descrição em branco")
         void shouldRejectBlankDescription() {
             assertThrows(IllegalArgumentException.class,
                     () -> Coupon.create(VALID_CODE, "   ", VALID_DISCOUNT, VALID_EXPIRATION, false));
         }
 
         @Test
-        @DisplayName("should reject invalid coupon code")
+        @DisplayName("deve rejeitar código de cupom inválido")
         void shouldRejectInvalidCode() {
             assertThrows(InvalidCouponCodeException.class,
                     () -> Coupon.create("AB", VALID_DESCRIPTION, VALID_DISCOUNT, VALID_EXPIRATION, false));
         }
 
         @Test
-        @DisplayName("should reject discount below minimum")
+        @DisplayName("deve rejeitar desconto abaixo do mínimo")
         void shouldRejectLowDiscount() {
             assertThrows(InvalidDiscountValueException.class,
                     () -> Coupon.create(VALID_CODE, VALID_DESCRIPTION, new BigDecimal("0.1"), VALID_EXPIRATION, false));
         }
 
         @Test
-        @DisplayName("should reject past expiration date")
+        @DisplayName("deve rejeitar data de expiração no passado")
         void shouldRejectPastExpiration() {
             LocalDate yesterday = LocalDate.now().minusDays(1);
 
@@ -119,11 +119,11 @@ class CouponTest {
     }
 
     @Nested
-    @DisplayName("Reconstitution")
+    @DisplayName("Reconstituição")
     class Reconstitution {
 
         @Test
-        @DisplayName("should reconstitute coupon from persisted data")
+        @DisplayName("deve reconstituir cupom a partir de dados persistidos")
         void shouldReconstituteCoupon() {
             UUID id = UUID.randomUUID();
             LocalDateTime createdAt = LocalDateTime.now().minusDays(10);
@@ -143,7 +143,7 @@ class CouponTest {
         }
 
         @Test
-        @DisplayName("should reconstitute a deleted coupon")
+        @DisplayName("deve reconstituir um cupom excluído")
         void shouldReconstituteDeletedCoupon() {
             UUID id = UUID.randomUUID();
             LocalDateTime deletedAt = LocalDateTime.now().minusDays(1);
@@ -163,7 +163,7 @@ class CouponTest {
     class Delete {
 
         @Test
-        @DisplayName("should soft-delete a coupon")
+        @DisplayName("deve realizar soft delete do cupom")
         void shouldSoftDelete() {
             Coupon coupon = createValidCoupon();
 
@@ -174,7 +174,7 @@ class CouponTest {
         }
 
         @Test
-        @DisplayName("should throw when deleting an already deleted coupon")
+        @DisplayName("deve lançar exceção ao tentar excluir cupom já excluído")
         void shouldRejectDoubleDelete() {
             Coupon coupon = createValidCoupon();
             coupon.delete();
@@ -192,7 +192,7 @@ class CouponTest {
     class IsExpired {
 
         @Test
-        @DisplayName("should return false when expiration date is in the future")
+        @DisplayName("deve retornar falso quando a data de expiração está no futuro")
         void shouldNotBeExpired() {
             Coupon coupon = createValidCoupon();
 
@@ -200,7 +200,7 @@ class CouponTest {
         }
 
         @Test
-        @DisplayName("should return true when expiration date is in the past (reconstituted)")
+        @DisplayName("deve retornar verdadeiro quando a data de expiração está no passado (reconstituído)")
         void shouldBeExpiredForPastDate() {
             Coupon coupon = Coupon.reconstitute(UUID.randomUUID(),
                     CouponCode.reconstitute("EXP001"), "Expired coupon",
@@ -217,7 +217,7 @@ class CouponTest {
     class IsActive {
 
         @Test
-        @DisplayName("should be active when not deleted and not expired")
+        @DisplayName("deve estar ativo quando não excluído e não expirado")
         void shouldBeActive() {
             Coupon coupon = createValidCoupon();
 
@@ -225,7 +225,7 @@ class CouponTest {
         }
 
         @Test
-        @DisplayName("should not be active when deleted")
+        @DisplayName("não deve estar ativo quando excluído")
         void shouldNotBeActiveWhenDeleted() {
             Coupon coupon = createValidCoupon();
             coupon.delete();
@@ -234,7 +234,7 @@ class CouponTest {
         }
 
         @Test
-        @DisplayName("should not be active when expired")
+        @DisplayName("não deve estar ativo quando expirado")
         void shouldNotBeActiveWhenExpired() {
             Coupon coupon = Coupon.reconstitute(UUID.randomUUID(),
                     CouponCode.reconstitute("EXP001"), "Expired",
@@ -246,7 +246,7 @@ class CouponTest {
         }
 
         @Test
-        @DisplayName("should not be active when both deleted and expired")
+        @DisplayName("não deve estar ativo quando excluído e expirado")
         void shouldNotBeActiveWhenDeletedAndExpired() {
             Coupon coupon = Coupon.reconstitute(UUID.randomUUID(),
                     CouponCode.reconstitute("EXP002"), "Expired and deleted",
@@ -259,11 +259,11 @@ class CouponTest {
     }
 
     @Nested
-    @DisplayName("Identity-based equality")
+    @DisplayName("Igualdade baseada em identidade")
     class EqualityTests {
 
         @Test
-        @DisplayName("should be equal when IDs match")
+        @DisplayName("deve ser igual quando os IDs são iguais")
         void shouldBeEqualBySameId() {
             UUID id = UUID.randomUUID();
             Coupon c1 = Coupon.reconstitute(id, CouponCode.reconstitute("ABC123"),
@@ -280,7 +280,7 @@ class CouponTest {
         }
 
         @Test
-        @DisplayName("should not be equal when IDs differ")
+        @DisplayName("não deve ser igual quando os IDs são diferentes")
         void shouldNotBeEqualForDifferentIds() {
             Coupon c1 = createValidCoupon();
             Coupon c2 = createValidCoupon();

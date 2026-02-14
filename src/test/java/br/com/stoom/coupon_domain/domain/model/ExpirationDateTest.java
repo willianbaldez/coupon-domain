@@ -9,15 +9,15 @@ import java.time.LocalDate;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-@DisplayName("ExpirationDate Value Object")
+@DisplayName("ExpirationDate - Value Object")
 class ExpirationDateTest {
 
     @Nested
-    @DisplayName("Creation via of()")
+    @DisplayName("Criação via of()")
     class Creation {
 
         @Test
-        @DisplayName("should create with a future date")
+        @DisplayName("deve criar com uma data futura")
         void shouldCreateWithFutureDate() {
             LocalDate future = LocalDate.now().plusDays(30);
             ExpirationDate date = ExpirationDate.of(future);
@@ -26,7 +26,7 @@ class ExpirationDateTest {
         }
 
         @Test
-        @DisplayName("should create with today's date (today is not in the past)")
+        @DisplayName("deve criar com a data de hoje (hoje não está no passado)")
         void shouldCreateWithToday() {
             LocalDate today = LocalDate.now();
             ExpirationDate date = ExpirationDate.of(today);
@@ -35,7 +35,7 @@ class ExpirationDateTest {
         }
 
         @Test
-        @DisplayName("should reject null date")
+        @DisplayName("deve rejeitar data nula")
         void shouldRejectNull() {
             InvalidExpirationDateException ex = assertThrows(
                     InvalidExpirationDateException.class,
@@ -45,7 +45,7 @@ class ExpirationDateTest {
         }
 
         @Test
-        @DisplayName("should reject a date in the past")
+        @DisplayName("deve rejeitar data no passado")
         void shouldRejectPastDate() {
             LocalDate yesterday = LocalDate.now().minusDays(1);
 
@@ -58,11 +58,11 @@ class ExpirationDateTest {
     }
 
     @Nested
-    @DisplayName("Reconstitution")
+    @DisplayName("Reconstituição")
     class Reconstitution {
 
         @Test
-        @DisplayName("should reconstitute past date without validation (from persistence)")
+        @DisplayName("deve reconstituir data passada sem validação (a partir da persistência)")
         void shouldReconstitutePastDate() {
             LocalDate pastDate = LocalDate.now().minusDays(30);
             ExpirationDate date = ExpirationDate.reconstitute(pastDate);
@@ -76,7 +76,7 @@ class ExpirationDateTest {
     class IsExpired {
 
         @Test
-        @DisplayName("should return false for a future date")
+        @DisplayName("deve retornar falso para data futura")
         void shouldNotBeExpiredForFutureDate() {
             ExpirationDate date = ExpirationDate.of(LocalDate.now().plusDays(10));
 
@@ -84,7 +84,7 @@ class ExpirationDateTest {
         }
 
         @Test
-        @DisplayName("should return false for today")
+        @DisplayName("deve retornar falso para a data de hoje")
         void shouldNotBeExpiredForToday() {
             ExpirationDate date = ExpirationDate.of(LocalDate.now());
 
@@ -92,7 +92,7 @@ class ExpirationDateTest {
         }
 
         @Test
-        @DisplayName("should return true for a past date (reconstituted)")
+        @DisplayName("deve retornar verdadeiro para data passada (reconstituída)")
         void shouldBeExpiredForPastDate() {
             ExpirationDate date = ExpirationDate.reconstitute(LocalDate.now().minusDays(1));
 
@@ -101,11 +101,11 @@ class ExpirationDateTest {
     }
 
     @Nested
-    @DisplayName("Equality")
+    @DisplayName("Igualdade")
     class Equality {
 
         @Test
-        @DisplayName("should be equal when dates are the same")
+        @DisplayName("deve ser igual quando as datas são iguais")
         void shouldBeEqualForSameDate() {
             LocalDate date = LocalDate.now().plusDays(5);
             ExpirationDate d1 = ExpirationDate.of(date);
@@ -116,7 +116,7 @@ class ExpirationDateTest {
         }
 
         @Test
-        @DisplayName("should not be equal when dates differ")
+        @DisplayName("não deve ser igual quando as datas são diferentes")
         void shouldNotBeEqualForDifferentDates() {
             ExpirationDate d1 = ExpirationDate.of(LocalDate.now().plusDays(1));
             ExpirationDate d2 = ExpirationDate.of(LocalDate.now().plusDays(2));
@@ -126,7 +126,7 @@ class ExpirationDateTest {
     }
 
     @Test
-    @DisplayName("toString should return ISO date string")
+    @DisplayName("toString deve retornar a data no formato ISO")
     void toStringShouldReturnIsoDate() {
         LocalDate date = LocalDate.of(2026, 12, 31);
         ExpirationDate expDate = ExpirationDate.of(date);

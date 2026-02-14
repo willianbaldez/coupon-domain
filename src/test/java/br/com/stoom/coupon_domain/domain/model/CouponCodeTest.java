@@ -7,15 +7,15 @@ import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-@DisplayName("CouponCode Value Object")
+@DisplayName("CouponCode - Value Object")
 class CouponCodeTest {
 
     @Nested
-    @DisplayName("Creation via of()")
+    @DisplayName("Criação via of()")
     class Creation {
 
         @Test
-        @DisplayName("should create a valid coupon code with 6 alphanumeric characters")
+        @DisplayName("deve criar um código válido com 6 caracteres alfanuméricos")
         void shouldCreateValidCode() {
             CouponCode code = CouponCode.of("ABC123");
 
@@ -23,7 +23,7 @@ class CouponCodeTest {
         }
 
         @Test
-        @DisplayName("should normalize code to uppercase")
+        @DisplayName("deve normalizar o código para letras maiúsculas")
         void shouldNormalizeToUppercase() {
             CouponCode code = CouponCode.of("abc123");
 
@@ -31,7 +31,7 @@ class CouponCodeTest {
         }
 
         @Test
-        @DisplayName("should strip special characters before validation")
+        @DisplayName("deve remover caracteres especiais antes da validação")
         void shouldStripSpecialCharacters() {
             CouponCode code = CouponCode.of("AB-C1.23");
 
@@ -39,7 +39,7 @@ class CouponCodeTest {
         }
 
         @Test
-        @DisplayName("should strip spaces before validation")
+        @DisplayName("deve remover espaços antes da validação")
         void shouldStripSpaces() {
             CouponCode code = CouponCode.of("AB C1 23");
 
@@ -47,7 +47,7 @@ class CouponCodeTest {
         }
 
         @Test
-        @DisplayName("should reject null code")
+        @DisplayName("deve rejeitar código nulo")
         void shouldRejectNull() {
             InvalidCouponCodeException ex = assertThrows(
                     InvalidCouponCodeException.class,
@@ -57,19 +57,19 @@ class CouponCodeTest {
         }
 
         @Test
-        @DisplayName("should reject blank code")
+        @DisplayName("deve rejeitar código em branco")
         void shouldRejectBlank() {
             assertThrows(InvalidCouponCodeException.class, () -> CouponCode.of("   "));
         }
 
         @Test
-        @DisplayName("should reject empty code")
+        @DisplayName("deve rejeitar código vazio")
         void shouldRejectEmpty() {
             assertThrows(InvalidCouponCodeException.class, () -> CouponCode.of(""));
         }
 
         @Test
-        @DisplayName("should reject code with fewer than 6 alphanumeric characters")
+        @DisplayName("deve rejeitar código com menos de 6 caracteres alfanuméricos")
         void shouldRejectTooShort() {
             InvalidCouponCodeException ex = assertThrows(
                     InvalidCouponCodeException.class,
@@ -79,24 +79,24 @@ class CouponCodeTest {
         }
 
         @Test
-        @DisplayName("should reject code with more than 6 alphanumeric characters")
+        @DisplayName("deve rejeitar código com mais de 6 caracteres alfanuméricos")
         void shouldRejectTooLong() {
             assertThrows(InvalidCouponCodeException.class, () -> CouponCode.of("ABCDEFG"));
         }
 
         @Test
-        @DisplayName("should reject code that is only special characters")
+        @DisplayName("deve rejeitar código composto apenas por caracteres especiais")
         void shouldRejectOnlySpecialChars() {
             assertThrows(InvalidCouponCodeException.class, () -> CouponCode.of("!@#$%^"));
         }
     }
 
     @Nested
-    @DisplayName("Reconstitution")
+    @DisplayName("Reconstituição")
     class Reconstitution {
 
         @Test
-        @DisplayName("should reconstitute from persisted value without validation")
+        @DisplayName("deve reconstituir a partir de valor persistido sem validação")
         void shouldReconstitute() {
             CouponCode code = CouponCode.reconstitute("ABC123");
 
@@ -105,11 +105,11 @@ class CouponCodeTest {
     }
 
     @Nested
-    @DisplayName("Equality")
+    @DisplayName("Igualdade")
     class Equality {
 
         @Test
-        @DisplayName("should be equal when values are the same")
+        @DisplayName("deve ser igual quando os valores são iguais")
         void shouldBeEqualForSameValue() {
             CouponCode code1 = CouponCode.of("ABC123");
             CouponCode code2 = CouponCode.of("abc123");
@@ -119,7 +119,7 @@ class CouponCodeTest {
         }
 
         @Test
-        @DisplayName("should not be equal when values differ")
+        @DisplayName("não deve ser igual quando os valores são diferentes")
         void shouldNotBeEqualForDifferentValues() {
             CouponCode code1 = CouponCode.of("ABC123");
             CouponCode code2 = CouponCode.of("XYZ789");
@@ -128,7 +128,7 @@ class CouponCodeTest {
         }
 
         @Test
-        @DisplayName("should not be equal to null")
+        @DisplayName("não deve ser igual a nulo")
         void shouldNotBeEqualToNull() {
             CouponCode code = CouponCode.of("ABC123");
 
@@ -137,7 +137,7 @@ class CouponCodeTest {
     }
 
     @Test
-    @DisplayName("toString should return the code value")
+    @DisplayName("toString deve retornar o valor do código")
     void toStringShouldReturnValue() {
         CouponCode code = CouponCode.of("abc123");
 
