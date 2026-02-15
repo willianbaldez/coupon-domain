@@ -1,7 +1,7 @@
 package br.com.stoom.coupon_domain.adapter.in.web.dto;
 
 import jakarta.validation.constraints.DecimalMin;
-import jakarta.validation.constraints.Future;
+import jakarta.validation.constraints.FutureOrPresent;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 
@@ -20,7 +20,7 @@ public record CreateCouponRequest(
         BigDecimal discountValue,
 
         @NotNull(message = "A data de expiração é obrigatória")
-        @Future(message = "A data de expiração deve ser uma data futura")
+        @FutureOrPresent(message = "A data de expiração não pode estar no passado")
         LocalDate expirationDate,
 
         boolean published

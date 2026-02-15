@@ -1,6 +1,9 @@
 package br.com.stoom.coupon_domain.adapter.out.persistence;
 
 import br.com.stoom.coupon_domain.domain.model.Coupon;
+import br.com.stoom.coupon_domain.domain.model.CouponCode;
+import br.com.stoom.coupon_domain.domain.model.DiscountValue;
+import br.com.stoom.coupon_domain.domain.model.ExpirationDate;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -24,7 +27,7 @@ import static org.mockito.Mockito.*;
 class CouponAdapterTest {
 
     @Mock
-    private CouponRepository couponRepository;
+    private CouponJpaRepository couponJpaRepository;
 
     @InjectMocks
     private CouponAdapter couponAdapter;
@@ -46,14 +49,14 @@ class CouponAdapterTest {
         void shouldSaveCouponAndReturnDomain() {
             UUID id = UUID.randomUUID();
             CouponEntity entity = createEntity(id, "ABC123");
-            when(couponRepository.save(any(CouponEntity.class))).thenReturn(entity);
+            when(couponJpaRepository.save(any(CouponEntity.class))).thenReturn(entity);
 
             Coupon coupon = Coupon.reconstitute(
                     id,
-                    br.com.stoom.coupon_domain.domain.model.CouponCode.reconstitute("ABC123"),
+                    CouponCode.reconstitute("ABC123"),
                     "Descrição",
-                    br.com.stoom.coupon_domain.domain.model.DiscountValue.reconstitute(new BigDecimal("10.00")),
-                    br.com.stoom.coupon_domain.domain.model.ExpirationDate.reconstitute(LocalDate.now().plusDays(30)),
+                    DiscountValue.reconstitute(new BigDecimal("10.00")),
+                    ExpirationDate.reconstitute(LocalDate.now().plusDays(30)),
                     true, false, null, LocalDateTime.now().minusDays(5)
             );
 
@@ -62,7 +65,7 @@ class CouponAdapterTest {
             assertNotNull(result);
             assertEquals(id, result.getId());
             assertEquals("ABC123", result.getCode().value());
-            verify(couponRepository).save(any(CouponEntity.class));
+            verify(couponJpaRepository).save(any(CouponEntity.class));
         }
     }
 
@@ -75,7 +78,7 @@ class CouponAdapterTest {
         void shouldReturnCouponWhenFoundById() {
             UUID id = UUID.randomUUID();
             CouponEntity entity = createEntity(id, "FND001");
-            when(couponRepository.findById(id)).thenReturn(Optional.of(entity));
+            when(couponJpaRepository.findById(id)).thenReturn(Optional.of(entity));
 
             Optional<Coupon> result = couponAdapter.findById(id);
 
@@ -88,7 +91,7 @@ class CouponAdapterTest {
         @DisplayName("deve retornar vazio quando cupom não é encontrado por ID")
         void shouldReturnEmptyWhenNotFoundById() {
             UUID id = UUID.randomUUID();
-            when(couponRepository.findById(id)).thenReturn(Optional.empty());
+            when(couponJpaRepository.findById(id)).thenReturn(Optional.empty());
 
             Optional<Coupon> result = couponAdapter.findById(id);
 
@@ -105,7 +108,7 @@ class CouponAdapterTest {
         void shouldReturnCouponWhenFoundByCode() {
             UUID id = UUID.randomUUID();
             CouponEntity entity = createEntity(id, "BYC001");
-            when(couponRepository.findByCode("BYC001")).thenReturn(Optional.of(entity));
+            when(couponJpaRepository.findByCode("BYC001")).thenReturn(Optional.of(entity));
 
             Optional<Coupon> result = couponAdapter.findByCode("BYC001");
 
@@ -116,7 +119,7 @@ class CouponAdapterTest {
         @Test
         @DisplayName("deve retornar vazio quando cupom não é encontrado por código")
         void shouldReturnEmptyWhenNotFoundByCode() {
-            when(couponRepository.findByCode("XXX999")).thenReturn(Optional.empty());
+            when(couponJpaRepository.findByCode("XXX999")).thenReturn(Optional.empty());
 
             Optional<Coupon> result = couponAdapter.findByCode("XXX999");
 
@@ -131,7 +134,7 @@ class CouponAdapterTest {
         @Test
         @DisplayName("deve retornar true quando código existe")
         void shouldReturnTrueWhenCodeExists() {
-            when(couponRepository.existsByCode("ABC123")).thenReturn(true);
+            when(couponJpaRepository.existsByCode("ABC123")).thenReturn(true);
 
             assertTrue(couponAdapter.existsByCode("ABC123"));
         }
@@ -139,7 +142,7 @@ class CouponAdapterTest {
         @Test
         @DisplayName("deve retornar false quando código não existe")
         void shouldReturnFalseWhenCodeDoesNotExist() {
-            when(couponRepository.existsByCode("ZZZ999")).thenReturn(false);
+            when(couponJpaRepository.existsByCode("ZZZ999")).thenReturn(false);
 
             assertFalse(couponAdapter.existsByCode("ZZZ999"));
         }
