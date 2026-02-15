@@ -1,0 +1,17 @@
+services:
+  postgres:
+    image: postgres:17-alpine
+    container_name: coupon-db
+    environment:
+      POSTGRES_DB: ${DB_NAME:-coupon_db}
+      POSTGRES_USER: ${DB_USERNAME:-coupon_user}
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-coupon_pass}
+    ports:
+      - "${DB_PORT:-5432}:5432"
+    volumes:
+      - coupon-data:/var/lib/postgresql/data
+      - ./src/main/resources/db/schema.sql:/docker-entrypoint-initdb.d/01-schema.sql:ro
+    restart: unless-stopped
+
+volumes:
+  coupon-data:

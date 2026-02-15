@@ -1,3 +1,9 @@
 spring:
   application:
     name: coupon-domain
+
+  profiles:
+    active: ${SPRING_PROFILES_ACTIVE:dev}
+
+  jpa:
+    open-in-view: false
