@@ -65,6 +65,20 @@ class DeleteCouponUseCaseImplTest {
             verify(couponRepository).findByCode(code);
             verify(couponRepository).save(coupon);
         }
+
+        @Test
+        @DisplayName("deve normalizar código para uppercase antes de buscar")
+        void shouldNormalizeCodeToUppercaseBeforeSearch() {
+            String code = "ABC123";
+            Coupon coupon = createActiveCoupon(code);
+            when(couponRepository.findByCode(code)).thenReturn(Optional.of(coupon));
+            when(couponRepository.save(any(Coupon.class))).thenAnswer(invocation -> invocation.getArgument(0));
+
+            deleteCouponUseCase.execute("abc123");
+
+            verify(couponRepository).findByCode("ABC123");
+            assertTrue(coupon.isDeleted());
+        }
     }
 
     @Nested

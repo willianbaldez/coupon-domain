@@ -19,9 +19,11 @@ public class DeleteCouponUseCaseImpl implements DeleteCouponUseCase {
     @Override
     @Transactional
     public void execute(String couponCode) {
-        Coupon coupon = couponRepository.findByCode(couponCode)
+        String normalizedCode = couponCode.toUpperCase();
+
+        Coupon coupon = couponRepository.findByCode(normalizedCode)
                 .orElseThrow(() -> new CouponNotFoundException(
-                        "Cupom não encontrado com o código '" + couponCode + "'"
+                        "Cupom não encontrado com o código '" + normalizedCode + "'"
                 ));
 
         coupon.delete();
