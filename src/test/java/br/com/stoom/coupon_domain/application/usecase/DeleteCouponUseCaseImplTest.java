@@ -35,10 +35,10 @@ class DeleteCouponUseCaseImplTest {
     @InjectMocks
     private DeleteCouponUseCaseImpl deleteCouponUseCase;
 
-    private Coupon createActiveCoupon(UUID id) {
+    private Coupon createActiveCoupon(String code) {
         return Coupon.reconstitute(
-                id,
-                CouponCode.reconstitute("ABC123"),
+                UUID.randomUUID(),
+                CouponCode.reconstitute(code),
                 "Cupom ativo",
                 DiscountValue.reconstitute(new BigDecimal("10.00")),
                 ExpirationDate.reconstitute(LocalDate.now().plusDays(30)),
@@ -51,18 +51,18 @@ class DeleteCouponUseCaseImplTest {
     class SuccessScenarios {
 
         @Test
-        @DisplayName("deve realizar soft delete do cupom")
-        void shouldSoftDeleteCoupon() {
-            UUID couponId = UUID.randomUUID();
-            Coupon coupon = createActiveCoupon(couponId);
-            when(couponRepository.findById(couponId)).thenReturn(Optional.of(coupon));
+        @DisplayName("deve realizar soft delete do cupom pelo código")
+        void shouldSoftDeleteCouponByCode() {
+            String code = "ABC123";
+            Coupon coupon = createActiveCoupon(code);
+            when(couponRepository.findByCode(code)).thenReturn(Optional.of(coupon));
             when(couponRepository.save(any(Coupon.class))).thenAnswer(invocation -> invocation.getArgument(0));
 
-            deleteCouponUseCase.execute(couponId);
+            deleteCouponUseCase.execute(code);
 
             assertTrue(coupon.isDeleted());
             assertNotNull(coupon.getDeletedAt());
-            verify(couponRepository).findById(couponId);
+            verify(couponRepository).findByCode(code);
             verify(couponRepository).save(coupon);
         }
     }
@@ -72,36 +72,36 @@ class DeleteCouponUseCaseImplTest {
     class ErrorScenarios {
 
         @Test
-        @DisplayName("deve lançar exceção quando cupom não é encontrado")
-        void shouldThrowWhenCouponNotFound() {
-            UUID couponId = UUID.randomUUID();
-            when(couponRepository.findById(couponId)).thenReturn(Optional.empty());
+        @DisplayName("deve lançar exceção quando cupom não é encontrado pelo código")
+        void shouldThrowWhenCouponNotFoundByCode() {
+            String code = "XYZ999";
+            when(couponRepository.findByCode(code)).thenReturn(Optional.empty());
 
             CouponNotFoundException ex = assertThrows(
                     CouponNotFoundException.class,
-                    () -> deleteCouponUseCase.execute(couponId)
+                    () -> deleteCouponUseCase.execute(code)
             );
 
-            assertTrue(ex.getMessage().contains(couponId.toString()));
+            assertTrue(ex.getMessage().contains(code));
             verify(couponRepository, never()).save(any());
         }
 
         @Test
         @DisplayName("deve propagar exceção ao tentar excluir cupom já excluído")
         void shouldPropagateAlreadyDeletedException() {
-            UUID couponId = UUID.randomUUID();
+            String code = "DEL001";
             Coupon deletedCoupon = Coupon.reconstitute(
-                    couponId,
-                    CouponCode.reconstitute("DEL001"),
+                    UUID.randomUUID(),
+                    CouponCode.reconstitute(code),
                     "Já excluído",
                     DiscountValue.reconstitute(new BigDecimal("10.00")),
                     ExpirationDate.reconstitute(LocalDate.now().plusDays(30)),
                     true, true, LocalDateTime.now().minusDays(1), LocalDateTime.now().minusDays(5)
             );
-            when(couponRepository.findById(couponId)).thenReturn(Optional.of(deletedCoupon));
+            when(couponRepository.findByCode(code)).thenReturn(Optional.of(deletedCoupon));
 
             assertThrows(CouponAlreadyDeletedException.class,
-                    () -> deleteCouponUseCase.execute(couponId));
+                    () -> deleteCouponUseCase.execute(code));
 
             verify(couponRepository, never()).save(any());
         }

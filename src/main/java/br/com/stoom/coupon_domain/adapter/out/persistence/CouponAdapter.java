@@ -29,6 +29,12 @@ public class CouponAdapter implements br.com.stoom.coupon_domain.domain.port.Cou
     }
 
     @Override
+    public Optional<Coupon> findByCode(String code) {
+        return couponRepository.findByCode(code)
+                .map(CouponMapper::toDomain);
+    }
+
+    @Override
     public boolean existsByCode(String code) {
         return couponRepository.existsByCode(code);
     }

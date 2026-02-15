@@ -11,5 +11,7 @@ public interface CouponRepository {
 
     Optional<Coupon> findById(UUID id);
 
+    Optional<Coupon> findByCode(String code);
+
     boolean existsByCode(String code);
 }
