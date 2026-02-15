@@ -18,10 +18,10 @@ public class DeleteCouponUseCaseImpl implements DeleteCouponUseCase {
 
     @Override
     @Transactional
-    public void execute(java.util.UUID couponId) {
-        Coupon coupon = couponRepository.findById(couponId)
+    public void execute(String couponCode) {
+        Coupon coupon = couponRepository.findByCode(couponCode)
                 .orElseThrow(() -> new CouponNotFoundException(
-                        "Cupom não encontrado com o ID '" + couponId + "'"
+                        "Cupom não encontrado com o código '" + couponCode + "'"
                 ));
 
         coupon.delete();
