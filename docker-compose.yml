@@ -7,7 +7,7 @@ services:
       POSTGRES_USER: ${DB_USERNAME:-coupon_user}
       POSTGRES_PASSWORD: ${DB_PASSWORD:-coupon_pass}
     ports:
-      - "${DB_PORT:-5432}:5432"
+      - "${DB_PORT:-5433}:5432"
     volumes:
       - coupon-data:/var/lib/postgresql/data
       - ./src/main/resources/db/schema.sql:/docker-entrypoint-initdb.d/01-schema.sql:ro
