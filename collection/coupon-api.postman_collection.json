@@ -1,0 +1,268 @@
+{
+	"info": {
+		"_postman_id": "coupon-domain-api",
+		"name": "Coupon Domain API",
+		"description": "Coleção Postman para a API de gerenciamento de cupons de desconto",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"variable": [
+		{
+			"key": "base_url",
+			"value": "http://localhost:8080",
+			"type": "string"
+		}
+	],
+	"item": [
+		{
+			"name": "Cupons",
+			"item": [
+				{
+					"name": "Criar cupom",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"code\": \"ABC123\",\n    \"description\": \"Cupom de desconto de 10 reais\",\n    \"discountValue\": 10.00,\n    \"expirationDate\": \"2026-12-31\",\n    \"published\": true\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/cupons",
+							"host": ["{{base_url}}"],
+							"path": ["cupons"]
+						},
+						"description": "Cria um novo cupom de desconto. O código deve conter exatamente 6 caracteres alfanuméricos. Caracteres especiais são removidos automaticamente."
+					},
+					"response": [
+						{
+							"name": "201 - Cupom criado com sucesso",
+							"originalRequest": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"code\": \"ABC123\",\n    \"description\": \"Cupom de desconto de 10 reais\",\n    \"discountValue\": 10.00,\n    \"expirationDate\": \"2026-12-31\",\n    \"published\": true\n}"
+								},
+								"url": {
+									"raw": "{{base_url}}/cupons",
+									"host": ["{{base_url}}"],
+									"path": ["cupons"]
+								}
+							},
+							"status": "Created",
+							"code": 201,
+							"body": "{\n    \"id\": \"550e8400-e29b-41d4-a716-446655440000\",\n    \"code\": \"ABC123\",\n    \"description\": \"Cupom de desconto de 10 reais\",\n    \"discountValue\": 10.00,\n    \"expirationDate\": \"2026-12-31\",\n    \"published\": true,\n    \"deleted\": false,\n    \"deletedAt\": null,\n    \"createdAt\": \"2026-02-15T10:30:00\",\n    \"expired\": false,\n    \"active\": true\n}"
+						},
+						{
+							"name": "400 - Dados inválidos",
+							"originalRequest": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"code\": \"\",\n    \"description\": \"\",\n    \"discountValue\": 0.10,\n    \"expirationDate\": \"2020-01-01\",\n    \"published\": false\n}"
+								},
+								"url": {
+									"raw": "{{base_url}}/cupons",
+									"host": ["{{base_url}}"],
+									"path": ["cupons"]
+								}
+							},
+							"status": "Bad Request",
+							"code": 400,
+							"body": "{\n    \"status\": 400,\n    \"mensagem\": \"Erro de validação\",\n    \"timestamp\": \"2026-02-15T10:30:00\",\n    \"erros\": [\n        \"code: O código é obrigatório\",\n        \"description: A descrição é obrigatória\"\n    ]\n}"
+						},
+						{
+							"name": "409 - Código já existe",
+							"originalRequest": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"code\": \"ABC123\",\n    \"description\": \"Cupom duplicado\",\n    \"discountValue\": 10.00,\n    \"expirationDate\": \"2026-12-31\",\n    \"published\": false\n}"
+								},
+								"url": {
+									"raw": "{{base_url}}/cupons",
+									"host": ["{{base_url}}"],
+									"path": ["cupons"]
+								}
+							},
+							"status": "Conflict",
+							"code": 409,
+							"body": "{\n    \"status\": 409,\n    \"mensagem\": \"Já existe um cupom com o código 'ABC123'\",\n    \"timestamp\": \"2026-02-15T10:30:00\",\n    \"erros\": null\n}"
+						}
+					]
+				},
+				{
+					"name": "Buscar cupom por código",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/cupons/ABC123",
+							"host": ["{{base_url}}"],
+							"path": ["cupons", "ABC123"]
+						},
+						"description": "Retorna os dados de um cupom pelo código. A busca é case-insensitive (abc123 encontra ABC123)."
+					},
+					"response": [
+						{
+							"name": "200 - Cupom encontrado",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/cupons/ABC123",
+									"host": ["{{base_url}}"],
+									"path": ["cupons", "ABC123"]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"body": "{\n    \"codigo\": \"ABC123\",\n    \"valorDesconto\": 10.00,\n    \"dataExpiracao\": \"2026-12-31\",\n    \"removido\": false\n}"
+						},
+						{
+							"name": "404 - Cupom não encontrado",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/cupons/XYZ999",
+									"host": ["{{base_url}}"],
+									"path": ["cupons", "XYZ999"]
+								}
+							},
+							"status": "Not Found",
+							"code": 404,
+							"body": "{\n    \"status\": 404,\n    \"mensagem\": \"Cupom não encontrado com o código 'XYZ999'\",\n    \"timestamp\": \"2026-02-15T10:30:00\",\n    \"erros\": null\n}"
+						}
+					]
+				},
+				{
+					"name": "Listar todos os cupons",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/cupons",
+							"host": ["{{base_url}}"],
+							"path": ["cupons"]
+						},
+						"description": "Retorna a lista de todos os cupons cadastrados no sistema."
+					},
+					"response": [
+						{
+							"name": "200 - Lista de cupons",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/cupons",
+									"host": ["{{base_url}}"],
+									"path": ["cupons"]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"body": "[\n    {\n        \"codigo\": \"ABC123\",\n        \"valorDesconto\": 10.00,\n        \"dataExpiracao\": \"2026-12-31\",\n        \"removido\": false\n    },\n    {\n        \"codigo\": \"DEF456\",\n        \"valorDesconto\": 20.00,\n        \"dataExpiracao\": \"2027-06-30\",\n        \"removido\": false\n    }\n]"
+						},
+						{
+							"name": "200 - Lista vazia",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/cupons",
+									"host": ["{{base_url}}"],
+									"path": ["cupons"]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"body": "[]"
+						}
+					]
+				},
+				{
+					"name": "Excluir cupom",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/cupons/ABC123",
+							"host": ["{{base_url}}"],
+							"path": ["cupons", "ABC123"]
+						},
+						"description": "Realiza soft delete de um cupom pelo código. O cupom não é removido do banco, apenas marcado como excluído."
+					},
+					"response": [
+						{
+							"name": "204 - Cupom excluído com sucesso",
+							"originalRequest": {
+								"method": "DELETE",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/cupons/ABC123",
+									"host": ["{{base_url}}"],
+									"path": ["cupons", "ABC123"]
+								}
+							},
+							"status": "No Content",
+							"code": 204,
+							"body": ""
+						},
+						{
+							"name": "404 - Cupom não encontrado",
+							"originalRequest": {
+								"method": "DELETE",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/cupons/XYZ999",
+									"host": ["{{base_url}}"],
+									"path": ["cupons", "XYZ999"]
+								}
+							},
+							"status": "Not Found",
+							"code": 404,
+							"body": "{\n    \"status\": 404,\n    \"mensagem\": \"Cupom não encontrado com o código 'XYZ999'\",\n    \"timestamp\": \"2026-02-15T10:30:00\",\n    \"erros\": null\n}"
+						},
+						{
+							"name": "422 - Cupom já excluído",
+							"originalRequest": {
+								"method": "DELETE",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/cupons/ABC123",
+									"host": ["{{base_url}}"],
+									"path": ["cupons", "ABC123"]
+								}
+							},
+							"status": "Unprocessable Entity",
+							"code": 422,
+							"body": "{\n    \"status\": 422,\n    \"mensagem\": \"O cupom 'ABC123' já foi excluído\",\n    \"timestamp\": \"2026-02-15T10:30:00\",\n    \"erros\": null\n}"
+						}
+					]
+				}
+			]
+		}
+	]
+}
