@@ -3,6 +3,7 @@ package br.com.stoom.coupon_domain.application.usecase;
 import br.com.stoom.coupon_domain.application.port.in.CreateCouponUseCase.CreateCouponCommand;
 import br.com.stoom.coupon_domain.domain.exception.CouponCodeAlreadyExistsException;
 import br.com.stoom.coupon_domain.domain.exception.InvalidCouponCodeException;
+import br.com.stoom.coupon_domain.domain.exception.InvalidDescriptionException;
 import br.com.stoom.coupon_domain.domain.exception.InvalidDiscountValueException;
 import br.com.stoom.coupon_domain.domain.exception.InvalidExpirationDateException;
 import br.com.stoom.coupon_domain.domain.model.Coupon;
@@ -156,7 +157,7 @@ class CreateCouponUseCaseImplTest {
                     LocalDate.now().plusDays(30), false
             );
 
-            assertThrows(IllegalArgumentException.class,
+            assertThrows(InvalidDescriptionException.class,
                     () -> createCouponUseCase.execute(blankDesc));
 
             verify(couponRepository, never()).save(any());

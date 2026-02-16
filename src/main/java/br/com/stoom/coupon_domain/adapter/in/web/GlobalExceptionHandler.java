@@ -40,12 +40,6 @@ public class GlobalExceptionHandler {
                 .body(ErrorResponse.of(HttpStatus.BAD_REQUEST.value(), ex.getMessage()));
     }
 
-    @ExceptionHandler(IllegalArgumentException.class)
-    public ResponseEntity<ErrorResponse> handleIllegalArgument(IllegalArgumentException ex) {
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                .body(ErrorResponse.of(HttpStatus.BAD_REQUEST.value(), ex.getMessage()));
-    }
-
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<ErrorResponse> handleValidation(MethodArgumentNotValidException ex) {
         List<String> erros = ex.getBindingResult().getFieldErrors().stream()
