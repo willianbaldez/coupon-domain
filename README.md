@@ -45,10 +45,12 @@ Com a aplicação rodando, acesse:
 
 ## Endpoints
 
-| Método | Endpoint           | Descrição               | Status |
-|--------|--------------------|-------------------------|--------|
-| POST   | /cupons            | Criar cupom             | 201    |
-| DELETE | /cupons/{codigo}   | Excluir cupom (soft)    | 204    |
+| Método | Endpoint           | Descrição                | Status |
+|--------|--------------------|--------------------------|--------|
+| POST   | /cupons            | Criar cupom              | 201    |
+| GET    | /cupons/{codigo}   | Buscar cupom por código  | 200    |
+| GET    | /cupons            | Listar todos os cupons   | 200    |
+| DELETE | /cupons/{codigo}   | Excluir cupom (soft)     | 204    |
 
 ## Estrutura de Pacotes
 

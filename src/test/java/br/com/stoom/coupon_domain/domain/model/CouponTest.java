@@ -2,6 +2,7 @@ package br.com.stoom.coupon_domain.domain.model;
 
 import br.com.stoom.coupon_domain.domain.exception.CouponAlreadyDeletedException;
 import br.com.stoom.coupon_domain.domain.exception.InvalidCouponCodeException;
+import br.com.stoom.coupon_domain.domain.exception.InvalidDescriptionException;
 import br.com.stoom.coupon_domain.domain.exception.InvalidDiscountValueException;
 import br.com.stoom.coupon_domain.domain.exception.InvalidExpirationDateException;
 import org.junit.jupiter.api.DisplayName;
@@ -83,14 +84,14 @@ class CouponTest {
         @Test
         @DisplayName("deve rejeitar descrição nula")
         void shouldRejectNullDescription() {
-            assertThrows(IllegalArgumentException.class,
+            assertThrows(InvalidDescriptionException.class,
                     () -> Coupon.create(VALID_CODE, null, VALID_DISCOUNT, VALID_EXPIRATION, false));
         }
 
         @Test
         @DisplayName("deve rejeitar descrição em branco")
         void shouldRejectBlankDescription() {
-            assertThrows(IllegalArgumentException.class,
+            assertThrows(InvalidDescriptionException.class,
                     () -> Coupon.create(VALID_CODE, "   ", VALID_DISCOUNT, VALID_EXPIRATION, false));
         }
 
