@@ -1,6 +1,7 @@
 package br.com.stoom.coupon_domain.domain.model;
 
 import br.com.stoom.coupon_domain.domain.exception.CouponAlreadyDeletedException;
+import br.com.stoom.coupon_domain.domain.exception.InvalidDescriptionException;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -132,7 +133,7 @@ public class Coupon {
 
     private static void validateDescription(String description) {
         if (description == null || description.isBlank()) {
-            throw new IllegalArgumentException("A descrição é obrigatória");
+            throw new InvalidDescriptionException("A descrição é obrigatória");
         }
     }
 }
