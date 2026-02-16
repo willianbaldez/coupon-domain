@@ -15,6 +15,8 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.Collections;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -124,6 +126,41 @@ class CouponAdapterTest {
             Optional<Coupon> result = couponAdapter.findByCode("XXX999");
 
             assertTrue(result.isEmpty());
+        }
+    }
+
+    @Nested
+    @DisplayName("findAll")
+    class FindAll {
+
+        @Test
+        @DisplayName("deve retornar lista de cupons convertidos para domínio")
+        void shouldReturnListOfDomainCoupons() {
+            UUID id1 = UUID.randomUUID();
+            UUID id2 = UUID.randomUUID();
+            List<CouponEntity> entities = List.of(
+                    createEntity(id1, "LST001"),
+                    createEntity(id2, "LST002")
+            );
+            when(couponJpaRepository.findAll()).thenReturn(entities);
+
+            List<Coupon> result = couponAdapter.findAll();
+
+            assertEquals(2, result.size());
+            assertEquals("LST001", result.get(0).getCode().value());
+            assertEquals("LST002", result.get(1).getCode().value());
+            verify(couponJpaRepository).findAll();
+        }
+
+        @Test
+        @DisplayName("deve retornar lista vazia quando não há cupons")
+        void shouldReturnEmptyListWhenNoCoupons() {
+            when(couponJpaRepository.findAll()).thenReturn(Collections.emptyList());
+
+            List<Coupon> result = couponAdapter.findAll();
+
+            assertTrue(result.isEmpty());
+            verify(couponJpaRepository).findAll();
         }
     }
 

@@ -1,5 +1,7 @@
 package br.com.stoom.coupon_domain.adapter.in.web;
 
+import br.com.stoom.coupon_domain.application.port.in.BuscarCupomPorCodigoUseCase;
+import br.com.stoom.coupon_domain.application.port.in.BuscarTodosCuponsUseCase;
 import br.com.stoom.coupon_domain.application.port.in.CreateCouponUseCase;
 import br.com.stoom.coupon_domain.application.port.in.CreateCouponUseCase.CreateCouponCommand;
 import br.com.stoom.coupon_domain.application.port.in.DeleteCouponUseCase;
@@ -28,12 +30,13 @@ import org.springframework.test.web.servlet.MockMvc;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.Collections;
+import java.util.List;
 import java.util.UUID;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @WebMvcTest(CouponController.class)
@@ -48,6 +51,12 @@ class CouponControllerTest {
 
     @MockitoBean
     private DeleteCouponUseCase deleteCouponUseCase;
+
+    @MockitoBean
+    private BuscarCupomPorCodigoUseCase buscarCupomPorCodigoUseCase;
+
+    @MockitoBean
+    private BuscarTodosCuponsUseCase buscarTodosCuponsUseCase;
 
     private ObjectMapper objectMapper;
 
@@ -295,6 +304,79 @@ class CouponControllerTest {
                     .andExpect(status().isUnprocessableEntity())
                     .andExpect(jsonPath("$.status").value(422))
                     .andExpect(jsonPath("$.mensagem").value("O cupom 'DEL001' já foi excluído"));
+        }
+    }
+
+    @Nested
+    @DisplayName("GET /cupons/{codigo}")
+    class FindByCode {
+
+        @Test
+        @DisplayName("deve retornar cupom e status 200")
+        void shouldReturnCouponAndStatus200() throws Exception {
+            Coupon coupon = createSampleCoupon();
+            when(buscarCupomPorCodigoUseCase.execute("ABC123")).thenReturn(coupon);
+
+            mockMvc.perform(get("/cupons/ABC123"))
+                    .andExpect(status().isOk())
+                    .andExpect(jsonPath("$.codigo").value("ABC123"))
+                    .andExpect(jsonPath("$.valorDesconto").value(10.00))
+                    .andExpect(jsonPath("$.dataExpiracao").exists())
+                    .andExpect(jsonPath("$.removido").value(false));
+
+            verify(buscarCupomPorCodigoUseCase).execute("ABC123");
+        }
+
+        @Test
+        @DisplayName("deve retornar 404 quando cupom não é encontrado")
+        void shouldReturn404WhenCouponNotFound() throws Exception {
+            when(buscarCupomPorCodigoUseCase.execute("XYZ999"))
+                    .thenThrow(new CouponNotFoundException("Cupom não encontrado com o código 'XYZ999'"));
+
+            mockMvc.perform(get("/cupons/XYZ999"))
+                    .andExpect(status().isNotFound())
+                    .andExpect(jsonPath("$.status").value(404))
+                    .andExpect(jsonPath("$.mensagem").value("Cupom não encontrado com o código 'XYZ999'"));
+        }
+    }
+
+    @Nested
+    @DisplayName("GET /cupons")
+    class FindAll {
+
+        @Test
+        @DisplayName("deve retornar lista de cupons e status 200")
+        void shouldReturnCouponListAndStatus200() throws Exception {
+            Coupon coupon1 = createSampleCoupon();
+            Coupon coupon2 = Coupon.reconstitute(
+                    UUID.randomUUID(),
+                    CouponCode.reconstitute("DEF456"),
+                    "Outro cupom",
+                    DiscountValue.reconstitute(new BigDecimal("20.00")),
+                    ExpirationDate.reconstitute(LocalDate.now().plusDays(60)),
+                    true, false, null, LocalDateTime.now()
+            );
+            when(buscarTodosCuponsUseCase.execute()).thenReturn(List.of(coupon1, coupon2));
+
+            mockMvc.perform(get("/cupons"))
+                    .andExpect(status().isOk())
+                    .andExpect(jsonPath("$.length()").value(2))
+                    .andExpect(jsonPath("$[0].codigo").value("ABC123"))
+                    .andExpect(jsonPath("$[1].codigo").value("DEF456"));
+
+            verify(buscarTodosCuponsUseCase).execute();
+        }
+
+        @Test
+        @DisplayName("deve retornar lista vazia e status 200")
+        void shouldReturnEmptyListAndStatus200() throws Exception {
+            when(buscarTodosCuponsUseCase.execute()).thenReturn(Collections.emptyList());
+
+            mockMvc.perform(get("/cupons"))
+                    .andExpect(status().isOk())
+                    .andExpect(jsonPath("$.length()").value(0));
+
+            verify(buscarTodosCuponsUseCase).execute();
         }
     }
 }

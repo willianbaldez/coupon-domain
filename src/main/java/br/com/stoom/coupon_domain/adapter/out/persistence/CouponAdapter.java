@@ -4,6 +4,7 @@ import br.com.stoom.coupon_domain.domain.model.Coupon;
 import br.com.stoom.coupon_domain.domain.port.CouponRepository;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -33,6 +34,13 @@ public class CouponAdapter implements CouponRepository {
     public Optional<Coupon> findByCode(String code) {
         return couponJpaRepository.findByCode(code)
                 .map(CouponMapper::toDomain);
+    }
+
+    @Override
+    public List<Coupon> findAll() {
+        return couponJpaRepository.findAll().stream()
+                .map(CouponMapper::toDomain)
+                .toList();
     }
 
     @Override

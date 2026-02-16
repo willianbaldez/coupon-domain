@@ -68,7 +68,3 @@ adapter
 
 config               (Configurações Spring)
 ```
-
-## Documentação
-
-Toda documentação de decisões arquiteturais está em `/docs`.
